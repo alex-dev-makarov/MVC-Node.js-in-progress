@@ -22,28 +22,28 @@ exports.getProducts = (req, res, next) => {
 	// 	.catch((err) => console.log(err));
 };
 
-// exports.getProduct = (req, res, next) => {
-// 	const prodId = req.params.productId;
-// 	Product.findByPk(prodId)
-// 		.then((productById) => {
-// 			res.render("shop/product-detail", {
-// 				product: productById,
-// 				pageTitle: productById.title,
-// 				path: "/products",
-// 			});
-// 		})
-// 		.catch((err) => console.log(err));
-// Product.findById(prodId)
-// 	.then(([product]) => {
-// 		console.log(product);
-// 		res.render("shop/product-detail", {
-// 			product: product[0],
-// 			pageTitle: product.title,
-// 			path: "/products",
-// 		});
-// 	})
-// 	.catch((err) => console.log(err));
-// };
+exports.getProduct = (req, res, next) => {
+	const prodId = req.params.productId;
+	Product.fetchById(prodId)
+		.then((productById) => {
+			res.render("shop/product-detail", {
+				product: productById,
+				pageTitle: productById.title,
+				path: "/products",
+			});
+		})
+		.catch((err) => console.log(err));
+	// Product.findById(prodId)
+	// 	.then(([product]) => {
+	// 		console.log(product);
+	// 		res.render("shop/product-detail", {
+	// 			product: product[0],
+	// 			pageTitle: product.title,
+	// 			path: "/products",
+	// 		});
+	// 	})
+	// 	.catch((err) => console.log(err));
+};
 
 exports.getIndex = (req, res, next) => {
 	Product.fetchAll()

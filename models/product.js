@@ -1,3 +1,61 @@
+const getDB = require("../util/database").getDB;
+const mongoDb = require("mongodb");
+class Product {
+	constructor(title, price, description, imageUrl, id) {
+		this.title = title;
+		this.price = price;
+		this.description = description;
+		this.imageUrl = imageUrl;
+		this._id = id ? new mongoDb.ObjectId(id) : null;
+	}
+	save() {
+		const db = getDB();
+		let dbOperation;
+		if (this._id) {
+			dbOperation = db
+				.collection("products")
+				.updateOne({ _id: this._id }, { $set: this });
+		} else {
+			dbOperation = db.collection("products").insertOne(this);
+		}
+		return dbOperation
+			.then((result) => {
+				console.log(result);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	}
+	static fetchAll() {
+		const db = getDB();
+		return db
+			.collection("products")
+			.find()
+			.toArray()
+			.then((products) => products)
+			.catch((err) => console.log(err, "s"));
+	}
+	static fetchById(id) {
+		const db = getDB();
+		return db
+			.collection("products")
+			.find({ _id: new mongoDb.ObjectId(id) })
+			.next()
+			.then((product) => {
+				return product;
+			})
+			.catch((err) => console.log(err));
+	}
+	static deleteById(id) {
+		const db = getDB();
+		return db
+			.collection("products")
+			.deleteOne({ _id: new mongoDb.ObjectId(id) })
+			.then((result) => console.log(result))
+			.catch((err) => console.log(err));
+	}
+}
+module.exports = Product;
 // // const fs = require("fs");
 // // const path = require("path");
 // const db = require("../util/database");
@@ -104,34 +162,3 @@
 // 		allowNull: false,
 // 	},
 // });
-const getDB = require("../util/database").getDB;
-class Product {
-	constructor(title, price, description, imageUrl) {
-		this.title = title;
-		this.price = price;
-		this.description = description;
-		this.imageUrl = imageUrl;
-	}
-	save() {
-		const db = getDB();
-		return db
-			.collection("products")
-			.insertOne(this)
-			.then((result) => {
-				console.log(result);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	}
-	static fetchAll() {
-		const db = getDB();
-		return db
-			.collection("products")
-			.find()
-			.toArray()
-			.then((products) => products)
-			.catch((err) => console.log(err, "s"));
-	}
-}
-module.exports = Product;
